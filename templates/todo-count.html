@@ -1,4 +1,6 @@
+{% let is_single_todo = remaining_todos == 1 %}
+
 <span hx-swap-oob="innerHTML:#todo-count">
   <strong>{{ remaining_todos }}</strong>
-  {% if remaining_todos == 1 %}todo{% else %}todos{% endif %} left
+  {{ is_single_todo|yes_no("todo", "todos") }} left
 </span>

@@ -1,4 +1,5 @@
 mod errors;
+mod filters;
 mod todos;
 
 use std::net::SocketAddr;
@@ -7,6 +8,12 @@ use anyhow::Result;
 use askama::Template;
 use axum::{response::IntoResponse, routing::get, Router};
 use tower_http::services::ServeDir;
+
+#[derive(Template)]
+#[template(source = "{{ condition|yes_no(\"yes\", \"no\") }}", ext = "txt")]
+struct YesNoFilterTemplate<'a> {
+  condition: &'a bool,
+}
 
 pub(crate) fn router() -> Router {
   Router::new()

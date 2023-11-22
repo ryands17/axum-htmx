@@ -1,3 +1,5 @@
+use crate::errors::ApiError;
+use crate::filters;
 use askama::Template;
 use axum::{
   extract::{Path, State},
@@ -9,8 +11,6 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
-
-use crate::errors::ApiError;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct Todo {

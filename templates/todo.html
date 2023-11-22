@@ -1,16 +1,9 @@
-{%- let list_class -%}
-{%- if todo.done -%}
-  {%- let list_class = "completed" -%}
-{%- else -%}
-  {%- let list_class = "" -%}
-{%- endif -%}
-
-<li class="{{ list_class }}" id="{{ todo.id }}">
+<li class="{{ todo.done|yes_no("completed", "") }}" id="{{ todo.id }}">
   <div class="view">
     <input
       class="toggle"
       type="checkbox"
-      {% if todo.done %}checked{% endif %}
+      {{ todo.done|yes_no("checked", "") }}
       hx-put="/todos/toggle/{{ todo.id }}"
       hx-target="closest li"
       hx-swap="outerHTML"
