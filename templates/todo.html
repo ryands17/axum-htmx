@@ -1,0 +1,40 @@
+{%- let list_class -%}
+{%- if todo.done -%}
+  {%- let list_class = "completed" -%}
+{%- else -%}
+  {%- let list_class = "" -%}
+{%- endif -%}
+
+<li class="{{ list_class }}" id="{{ todo.id }}">
+  <div class="view">
+    <input
+      class="toggle"
+      type="checkbox"
+      {% if todo.done %}checked{% endif %}
+      hx-put="/todos/toggle/{{ todo.id }}"
+      hx-target="closest li"
+      hx-swap="outerHTML"
+    />
+    <label _="on dblclick add .editing to the closest parent <li/>">
+      {{ todo.text }}
+    </label>
+    <button
+      class="destroy"
+      hx-post="/todos/{{ todo.id }}"
+      hx-target="closest li"
+      hx-swap="outerHTML"
+    />
+  </div>
+  <input
+    class="edit"
+    name="text"
+    value="{{ todo.text }}"
+    _="on keyup[key is 'Escape'] remove .editing from the closest parent <li/>"
+    hx-put="/todos/{{ todo.id }}"
+    hx-trigger="keyup[keyCode==13]"
+    hx-target="closest li"
+    hx-swap="outerHTML"
+  />
+</li>
+
+{% include "todo-count.html" %}

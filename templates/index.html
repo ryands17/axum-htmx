@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <body
+    hx-get="/todos"
+    hx-trigger="load"
+    hx-target=".header"
+    hx-swap="afterend"
+  >
+    <div>
+      <section class="todoapp">
+        <header class="header">
+          <h1>todos + HTMX</h1>
+          <input
+            class="new-todo"
+            name="text"
+            placeholder="What needs to be done?"
+            autofocus
+            hx-post="/todos"
+            hx-trigger="keyup[keyCode==13]"
+            hx-target=".todo-list"
+            hx-swap="beforeend"
+            _="on htmx:afterOnLoad set target.value to ''"
+          />
+        </header>
+        <footer class="footer">
+          <span id="todo-count" class="todo-count"></span>
+          <ul class="filters">
+            <li>
+              <a href="/"> All </a>
+            </li>
+            <li>
+              <a href="/?filter=active"> Active </a>
+            </li>
+            <li>
+              <a href="/?filter=completed"> Completed </a>
+            </li>
+          </ul>
+          <button
+            class="clear-completed"
+            hx-post="/todos/clear"
+            hx-target=".main"
+            hx-swap="outerHTML"
+          >
+            Clear completed
+          </button>
+        </footer>
+      </section>
+      <footer class="info">
+        <p>Double-click to edit a todo</p>
+        <p>Created by <a href="http://github.com/ryands17/">ryandsouza</a></p>
+        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+      </footer>
+    </div>
+  </body>
+{% endblock %}

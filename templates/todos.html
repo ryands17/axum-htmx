@@ -1,0 +1,14 @@
+<section class="main">
+  <input
+    id="toggle-all"
+    name="allTodosDone"
+    class="toggle-all"
+    type="checkbox"
+  />
+  <label for="toggle-all"></label>
+  <ul class="todo-list">
+    {% for todo in todos %}{% include "todo.html" %}{% endfor %}
+  </ul>
+</section>
+
+{% include "todo-count.html" %}

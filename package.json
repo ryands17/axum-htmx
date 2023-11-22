@@ -1,0 +1,32 @@
+{
+  "name": "axum-htmx",
+  "version": "1.0.0",
+  "description": "This is a simple Todos API made in Rust using Axum. This is a learning project with the accompanying blog post to be created soon.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^3.1.0",
+    "prettier-plugin-jinja-template": "^1.3.1"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "plugins": [
+      "prettier-plugin-jinja-template"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "*.html"
+        ],
+        "options": {
+          "parser": "jinja-template"
+        }
+      }
+    ]
+  }
+}
