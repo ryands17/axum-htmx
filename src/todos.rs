@@ -76,21 +76,23 @@ async fn toggle_todo(Path(id): Path<String>, State(store): MainState) -> impl In
 
   tracing::info!("trying to toggle todo: {id}");
 
-  let todo_result = todos.iter_mut().find(|todo| todo.id == id).map(|todo| {
-    todo.done = !todo.done;
-    todo.clone()
-  });
+  todos
+    .iter_mut()
+    .find(|todo| todo.id == id)
+    .map(|todo| {
+      todo.done = !todo.done;
+      todo.clone()
+    })
+    .map(|todo| {
+      let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
 
-  if let Some(todo) = todo_result {
-    let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
-    TodoItem {
-      todo,
-      remaining_todos,
-    }
-    .into_response()
-  } else {
-    ApiError::TodoNotFound(id).into_response()
-  }
+      TodoItem {
+        todo,
+        remaining_todos,
+      }
+      .into_response()
+    })
+    .unwrap_or(ApiError::TodoNotFound(id).into_response())
 }
 
 #[derive(Template)]
@@ -145,25 +147,22 @@ async fn edit_todo(
   Form(body): Form<CreateTodo>,
 ) -> impl IntoResponse {
   let mut todos = store.lock().await;
+  let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
 
   tracing::info!("trying to edit todo: {id}");
 
-  let updated_todo = todos.iter_mut().find(|todo| todo.id == id).map(|todo| {
-    todo.text = body.text;
-    todo.clone()
-  });
-
-  match updated_todo {
-    Some(todo) => {
-      let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
+  todos
+    .iter_mut()
+    .find(|todo| todo.id == id)
+    .map(|todo| {
+      todo.text = body.text;
       TodoItem {
-        todo,
+        todo: todo.clone(),
         remaining_todos,
       }
       .into_response()
-    }
-    _ => ApiError::TodoNotFound(id).into_response(),
-  }
+    })
+    .unwrap_or(ApiError::TodoNotFound(id).into_response())
 }
 
 async fn clear_completed(State(store): MainState) -> impl IntoResponse {
