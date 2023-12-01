@@ -10,13 +10,13 @@ tokio = { version = "1.32.0", features = ["full"] }
 anyhow = { version = "1.0.75", features = ["backtrace"] }
 serde = { version = "1.0.188", features = ["derive"] }
 serde_json = "1.0.108"
-axum = "0.6.20"
+axum = "0.7"
 tracing = "0.1.37"
 tracing-subscriber = "0.3.16"
 uuid = { version = "1.6.1", features = ["v4", "fast-rng"] }
 askama = { version = "0.12.1", features = ["with-axum"] }
-askama_axum = "0.3.0"
-tower-http = { version = "0.4.0", features = ["fs", "trace"] }
+askama_axum = "0.4.0"
+tower-http = { version = "0.5", features = ["fs", "trace"] }
 
 [dev-dependencies]
 axum-test-helper = "0.3.0"
