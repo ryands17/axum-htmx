@@ -182,7 +182,9 @@ async fn clear_completed(State(store): MainState) -> impl IntoResponse {
 #[cfg(test)]
 mod tests {
   use axum::http::StatusCode;
-  use axum_test_helper::TestClient;
+
+  extern crate tester;
+  use tester::TestClient;
 
   async fn setup_tests() -> TestClient {
     let app = crate::router();
