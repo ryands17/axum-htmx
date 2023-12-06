@@ -27,6 +27,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "app"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "askama",
+ "askama_axum",
+ "axum",
+ "serde",
+ "serde_json",
+ "tester",
+ "tokio",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
 name = "askama"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -149,24 +167,6 @@ dependencies = [
  "sync_wrapper",
  "tower-layer",
  "tower-service",
-]
-
-[[package]]
-name = "axum-htmx"
-version = "1.0.0"
-dependencies = [
- "anyhow",
- "askama",
- "askama_axum",
- "axum",
- "serde",
- "serde_json",
- "tester",
- "tokio",
- "tower-http",
- "tracing",
- "tracing-subscriber",
- "uuid",
 ]
 
 [[package]]

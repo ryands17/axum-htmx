@@ -4,7 +4,9 @@
   "description": "This is a simple Todos API made in Rust using Axum. This is a learning project with the accompanying blog post to be created soon.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "cargo watch -c -w app/src -w app/templates -x 'run -p app'",
+    "build": "cargo build -p app --release",
+    "test": "cargo test -p app"
   },
   "keywords": [],
   "author": "",

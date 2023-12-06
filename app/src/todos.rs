@@ -83,16 +83,19 @@ async fn toggle_todo(Path(id): Path<String>, State(store): MainState) -> impl In
       todo.done = !todo.done;
       todo.clone()
     })
-    .map(|todo| {
-      let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
+    .map_or_else(
+      || ApiError::TodoNotFound(id).into_response(),
+      |todo| {
+        let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
+        println!("{todo:?}");
 
-      TodoItem {
-        todo,
-        remaining_todos,
-      }
-      .into_response()
-    })
-    .unwrap_or(ApiError::TodoNotFound(id).into_response())
+        TodoItem {
+          todo,
+          remaining_todos,
+        }
+        .into_response()
+      },
+    )
 }
 
 #[derive(Template)]
@@ -151,18 +154,17 @@ async fn edit_todo(
 
   tracing::info!("trying to edit todo: {id}");
 
-  todos
-    .iter_mut()
-    .find(|todo| todo.id == id)
-    .map(|todo| {
+  todos.iter_mut().find(|todo| todo.id == id).map_or_else(
+    || ApiError::TodoNotFound(id).into_response(),
+    |todo| {
       todo.text = body.text;
       TodoItem {
         todo: todo.clone(),
         remaining_todos,
       }
       .into_response()
-    })
-    .unwrap_or(ApiError::TodoNotFound(id).into_response())
+    },
+  )
 }
 
 async fn clear_completed(State(store): MainState) -> impl IntoResponse {
@@ -182,8 +184,6 @@ async fn clear_completed(State(store): MainState) -> impl IntoResponse {
 #[cfg(test)]
 mod tests {
   use axum::http::StatusCode;
-
-  extern crate tester;
   use tester::TestClient;
 
   async fn setup_tests() -> TestClient {
