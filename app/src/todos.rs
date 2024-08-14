@@ -8,13 +8,28 @@ use axum::{
   Form, Router,
 };
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
+use std::{fmt::Display, sync::Arc};
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+struct Id(String);
+
+impl Display for Id {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    write!(f, "{}", self.0)
+  }
+}
+
+impl From<Uuid> for Id {
+  fn from(value: Uuid) -> Self {
+    Self(value.to_string())
+  }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct Todo {
-  id: String,
+  id: Id,
   text: String,
   done: bool,
 }
@@ -25,12 +40,12 @@ type MainState = State<Arc<Store>>;
 pub(crate) fn todos_service() -> Router {
   let initial_todos: Vec<Todo> = vec![
     Todo {
-      id: Uuid::new_v4().to_string(),
+      id: Uuid::new_v4().into(),
       text: "Learn React".to_string(),
       done: false,
     },
     Todo {
-      id: Uuid::new_v4().to_string(),
+      id: Uuid::new_v4().into(),
       text: "Learn Vim".to_string(),
       done: true,
     },
@@ -78,7 +93,7 @@ async fn toggle_todo(Path(id): Path<String>, State(store): MainState) -> impl In
 
   todos
     .iter_mut()
-    .find(|todo| todo.id == id)
+    .find(|todo| todo.id.0 == id)
     .map(|todo| {
       todo.done = !todo.done;
       todo.clone()
@@ -110,7 +125,7 @@ async fn delete_todo(Path(id): Path<String>, State(store): MainState) -> impl In
 
   tracing::info!("trying to delete todo: {id}");
 
-  todos.retain(|todo| todo.id != id);
+  todos.retain(|todo| todo.id.0 != id);
 
   if todos.len() != len {
     let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
@@ -130,7 +145,7 @@ async fn create_todo(State(store): MainState, Form(body): Form<CreateTodo>) -> i
   tracing::info!("creating todo: {:?}", body.text);
 
   let new_todo = Todo {
-    id: Uuid::new_v4().to_string(),
+    id: Uuid::new_v4().into(),
     text: body.text,
     done: false,
   };
@@ -154,7 +169,7 @@ async fn edit_todo(
 
   tracing::info!("trying to edit todo: {id}");
 
-  todos.iter_mut().find(|todo| todo.id == id).map_or_else(
+  todos.iter_mut().find(|todo| todo.id.0 == id).map_or_else(
     || ApiError::TodoNotFound(id).into_response(),
     |todo| {
       todo.text = body.text;
