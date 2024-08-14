@@ -188,7 +188,7 @@ mod tests {
 
   async fn setup_tests() -> TestClient {
     let app = crate::router();
-    TestClient::new(app)
+    TestClient::new(app).await
   }
 
   #[tokio::test]
