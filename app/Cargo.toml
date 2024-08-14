@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 tokio = { workspace = true }
-anyhow = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 axum = { workspace = true }
@@ -17,6 +16,11 @@ uuid = { workspace = true }
 askama = { workspace = true }
 askama_axum = { workspace = true }
 tower-http = { workspace = true }
+color-eyre = "0.6"
+thiserror = "1.0.63"
 
 [dev-dependencies]
 tester = { path = "../tester" }
+
+[profile.dev.package.backtrace]
+opt-level = 3

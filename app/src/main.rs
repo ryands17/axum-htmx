@@ -2,9 +2,9 @@ mod errors;
 mod filters;
 mod todos;
 
-use anyhow::Result;
 use askama::Template;
 use axum::{response::IntoResponse, routing::get, Router};
+use color_eyre::Result;
 use tokio::net::TcpListener;
 use tower_http::services::ServeDir;
 

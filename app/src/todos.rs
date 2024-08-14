@@ -1,4 +1,4 @@
-use crate::errors::ApiError;
+use crate::errors::ApiErrors;
 use crate::filters;
 use askama::Template;
 use axum::{
@@ -99,7 +99,7 @@ async fn toggle_todo(Path(id): Path<String>, State(store): MainState) -> impl In
       todo.clone()
     })
     .map_or_else(
-      || ApiError::TodoNotFound(id).into_response(),
+      || ApiErrors::TodoNotFound(id).into_response(),
       |todo| {
         let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
         println!("{todo:?}");
@@ -131,7 +131,7 @@ async fn delete_todo(Path(id): Path<String>, State(store): MainState) -> impl In
     let remaining_todos = todos.iter().filter(|todo| !todo.done).count();
     RemainingTodos { remaining_todos }.into_response()
   } else {
-    ApiError::TodoNotFound(id).into_response()
+    ApiErrors::TodoNotFound(id).into_response()
   }
 }
 
@@ -170,7 +170,7 @@ async fn edit_todo(
   tracing::info!("trying to edit todo: {id}");
 
   todos.iter_mut().find(|todo| todo.id.0 == id).map_or_else(
-    || ApiError::TodoNotFound(id).into_response(),
+    || ApiErrors::TodoNotFound(id).into_response(),
     |todo| {
       todo.text = body.text;
       TodoItem {
